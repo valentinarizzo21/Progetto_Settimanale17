@@ -1,0 +1,143 @@
+﻿@{
+    ViewData["Title"] = "Products list";
+}
+
+@if (TempData["Error"] != null)
+{
+    <p class="text-danger">@TempData["Error"]</p>
+}
+
+<div class="container">
+
+    <button class="btn btn-primary btn-sm" style="margin-left: 12px" onclick="showAddModal()">Add new product</button>
+
+    <div id="tableContainer" class="container"></div>
+</div>
+
+<div id="editModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Product</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div id="editBody" class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="deleteModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm delete product</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Do you really want to delete the product?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="deleteProductButton" onclick="deleteProduct()">Delete</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="addModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Product</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div id="addBody" class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+           loadList();
+        });
+
+        function loadList(){
+            let tableContainer = document.getElementById('tableContainer');
+
+            if(tableContainer){
+                fetch("room/get-all", {
+                    method: "GET"
+                })
+                .then(response => {
+                    if(response.ok){
+                        return response.text();
+                    }
+                })
+                .then(response => {
+                    tableContainer.innerHTML = response;
+                    new DataTable('#roomsTable');
+                })
+            }
+        }
+
+        async function showAddModal(){
+            const addModal = document.getElementById('addModal');
+            if(addModal){
+                const addModalComponent = new bootstrap.Modal(addModal);
+                const result = await fetch('Room/Add')
+                const response = await result.text()
+
+                const body = document.getElementById('addBody');
+
+                if(body){
+                    body.innerHTML = response;
+                }
+
+                addModalComponent.show();
+            }
+        }
+
+        function showEditModal(id){
+            fetch(`Room/Edit/${id}`)
+            .then(response => response.text())
+            .then(response => {
+                const modalComponent = document.getElementById('editModal');
+
+                if(modalComponent){
+                    let editModal = new bootstrap.Modal(modalComponent);
+                    let body = document.getElementById('editBody');
+                    if(body){
+                        body.innerHTML = response;
+                    }
+                    editModal.show();
+                }
+            })
+        }
+
+        async function deleteProduct(id){
+            const result = await fetch(`Room/Delete?id=${id}`, {
+                method: "POST"
+            })
+
+            const response = await result.json();
+
+            if(response.success){
+                const deleteModal = document.getElementById('deleteModal');
+                if(deleteModal){
+                    const deleteModalComponent = bootstrap.Modal.getInstance(deleteModal);
+                    deleteModalComponent.hide();
+                    loadList();
+                }
+            }
+        }
+    </script>
+}

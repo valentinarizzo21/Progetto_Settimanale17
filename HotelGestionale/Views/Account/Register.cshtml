@@ -1,0 +1,47 @@
+﻿@model HotelGestionale.ViewModels.RegisterViewModel
+
+<form asp-controller="Account" asp-action="Register" method="post">
+    <div>
+        <label for="FirstName">First Name</label>
+        <input asp-for="FirstName" id="FirstName" class="form-control" />
+        <span asp-validation-for="FirstName" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label for="LastName">Last Name</label>
+        <input asp-for="LastName" id="LastName" class="form-control" />
+        <span asp-validation-for="LastName" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label for="Email">Email</label>
+        <input asp-for="Email" type="email" id="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label for="BirthDate">Birth Date</label>
+        <input asp-for="BirthDate" type="date" id="BirthDate" class="form-control" />
+        <span asp-validation-for="BirthDate" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label for="Password">Password</label>
+        <input asp-for="Password" type="password" id="Password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label for="ConfirmPassword">Confirm Password</label>
+        <input asp-for="ConfirmPassword" type="password" id="ConfirmPassword" class="form-control" />
+        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Register</button>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

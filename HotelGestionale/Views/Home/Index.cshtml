@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome, @User.Identity.Name</h1>
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <p>You are logged in as @User.Identity.Name.</p>
+        <p>Your role: @User.IsInRole("Admin") ? "Admin" : "User"</p>
+    }
+    else
+    {
+        <p>You are not logged in.</p>
+    }
+
+    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
